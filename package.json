@@ -10,7 +10,7 @@
     "vite": "^5.3.3"
   },
   "dependencies": {
-    "@googlemaps/js-api-loader": "^1.16.6",
+    "@googlemaps/js-api-loader": "^1.16.8",
     "ol": "latest",
     "three": "^0.166.1",
     "three.meshline": "^1.4.0"
