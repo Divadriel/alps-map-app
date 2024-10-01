@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="https://openlayers.org/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alps Map</title>
+  </head>
+  <body>
+    <div id="map"></div>
+    <!--<script type="module" src="./main.js"></script>-->
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      uniform sampler2D bumpTexture;
+      uniform float bumpScale;
+
+      varying float vAmount;
+
+      void main(){
+          vec4 bumpData = texture2D(bumpTexture, uv); // color value of texel at coords uv
+          vAmount = bumpData.r; // get red color value of texel at coords uv
+
+          // move the position along the normal (direction of vertex)
+          vec3 newPosition = position + normal * bumpScale * vAmount;
+
+          // calculate new position of vertex
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+      }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-vertex">
+      // operates on "fragment of an object and tells what the color of that fragment is supposed to be"
+      // varying is variable that contains data from vertex shader to a fragment shader. float = decimal value for red color value of bump map
+      varying float vAmount;
+
+      void main(){
+        //               Color gradient main                   Color gradient edge
+        //                      minHt, maxHt, mapHt                minHt, maxHt, mapHt             RGB color
+        
+        vec3 plain = (smoothstep(-0.30, 0.15, vAmount) - smoothstep(0.10, 0.15, vAmount)) * vec3(0.831, 0.761, 0.659);
+        vec3 midPlain = (smoothstep(0.10, 0.15, vAmount) - smoothstep(0.10, 0.25, vAmount)) * vec3(0.831, 0.804, 0.659);
+        vec3 grass = (smoothstep(0.10, 0.25, vAmount) - smoothstep(0.20, 0.60, vAmount)) * vec3(0.533, 0.714, 0.212);
+        vec3 rock = (smoothstep(0.30, 0.80, vAmount) - smoothstep(0.75, 0.95, vAmount)) * vec3(0.702, 0.682, 0.592);
+        vec3 snow = (smoothstep(0.85, 0.90, vAmount)) * vec3(0.902, 0.902, 0.863);
+        gl_FragColor = vec4(plain + midPlain + grass + rock + snow, 1.0);
+      }
+    </script>
+
+    <script type="module" src="./script.js"></script>
+
+    <!--<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByH40ZVdyXQbKp2nNoRmilJ88KNkqOWGM">
+    </script>-->
+  </body>
+</html>
