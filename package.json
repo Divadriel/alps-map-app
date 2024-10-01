@@ -7,7 +7,7 @@
     "serve": "vite preview"
   },
   "devDependencies": {
-    "vite": "^5.3.3"
+    "vite": "^5.4.8"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.6",
